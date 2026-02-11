@@ -39,3 +39,18 @@
 .nav-links a:hover {
   color: #646cff; /* Color lila al pasar el mouse */
 }
+
+/* Busca .cart-badge en tu Navbar.css y cámbialo por esto */
+.cart-badge {
+  background-color: #ff4757;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+  border-radius: 50%; /* Esto lo hace circular */
+  padding: 2px 8px;
+  margin-left: 5px;   /* Separa el número del icono 🛒 */
+  display: inline-block;
+  min-width: 18px;
+  text-align: center;
+  vertical-align: middle;
+}
