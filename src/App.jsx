@@ -12,25 +12,32 @@ import './App.css';
 function App() {
   const [carrito, setCarrito] = useState([]);
   const [esModalAbierto, setEsModalAbierto] = useState(false);
+  // 1. Estado para controlar la animación
+  const [animarCarrito, setAnimarCarrito] = useState(false);
 
   const agregarAlCarrito = (producto) => {
     setCarrito([...carrito, producto]);
+    
+    // 2. Disparar la animación
+    setAnimarCarrito(true);
+    
+    // 3. Apagarla después de 300ms para que pueda repetirse en el siguiente clic
+    setTimeout(() => {
+      setAnimarCarrito(false);
+    }, 300);
   };
 
   const vaciarCarrito = () => {
     setCarrito([]);
   };
 
-  // --- NUEVA FUNCIÓN: ELIMINAR UNO POR UNO ---
   const eliminarDelCarrito = (indiceAEliminar) => {
     const nuevoCarrito = carrito.filter((_, index) => index !== indiceAEliminar);
     setCarrito(nuevoCarrito);
   };
 
-  // --- NUEVA FUNCIÓN: CALCULAR TOTAL ---
   const calcularTotal = () => {
     return carrito.reduce((total, item) => {
-      // Limpiamos el "$" y convertimos a número
       const precioNum = Number(item.precio.replace('$', ''));
       return total + precioNum;
     }, 0);
@@ -41,7 +48,12 @@ function App() {
   return (
     <BrowserRouter>
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        <Navbar cuenta={carrito.length} alClickCarrito={toggleModal} />
+        {/* 4. Pasamos el estado de la animación al Navbar */}
+        <Navbar 
+          cuenta={carrito.length} 
+          alClickCarrito={toggleModal} 
+          debeAnimar={animarCarrito} 
+        />
         
         <main style={{ flex: 1, marginTop: '80px' }}>
           <Routes>
@@ -69,7 +81,6 @@ function App() {
                           <span>{item.nombre}</span>
                           <strong style={{ marginLeft: '10px', color: '#535bf2' }}>{item.precio}</strong>
                         </div>
-                        {/* Botón para eliminar producto individual */}
                         <button 
                           onClick={() => eliminarDelCarrito(index)}
                           style={{ background: 'none', border: 'none', color: '#ff4757', cursor: 'pointer', fontSize: '1.2rem' }}
@@ -81,7 +92,6 @@ function App() {
                     ))}
                   </ul>
 
-                  {/* MOSTRAR EL TOTAL */}
                   <div style={{ marginTop: '20px', padding: '10px', borderTop: '2px solid #535bf2', textAlign: 'right' }}>
                     <h3>Total: <span style={{ color: '#535bf2' }}>${calcularTotal()}</span></h3>
                   </div>
