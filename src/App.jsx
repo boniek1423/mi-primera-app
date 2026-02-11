@@ -1,5 +1,5 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { useState, useEffect } from 'react'; // <--- 1. Importamos useEffect
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Inicio from './pages/Inicio';
@@ -8,7 +8,7 @@ import Contacto from './pages/Contacto';
 import './App.css';
 
 function App() {
-  // 2. Modificamos el useState para que cargue lo que haya en la memoria al iniciar
+  // 1. Carga del carrito desde LocalStorage
   const [carrito, setCarrito] = useState(() => {
     const carritoGuardado = localStorage.getItem('carrito_v1');
     return carritoGuardado ? JSON.parse(carritoGuardado) : [];
@@ -17,7 +17,7 @@ function App() {
   const [esModalAbierto, setEsModalAbierto] = useState(false);
   const [animarCarrito, setAnimarCarrito] = useState(false);
 
-  // 3. Este useEffect guarda el carrito automáticamente cada vez que cambie
+  // 2. Guardado automático en LocalStorage
   useEffect(() => {
     localStorage.setItem('carrito_v1', JSON.stringify(carrito));
   }, [carrito]);
@@ -41,7 +41,10 @@ function App() {
 
   const calcularTotal = () => {
     return carrito.reduce((total, item) => {
-      const precioNum = Number(item.precio.replace('$', ''));
+      // Convertimos el precio a número (asumiendo que viene como "1200" o 1200)
+      const precioNum = typeof item.precio === 'string' 
+        ? Number(item.precio.replace('$', '')) 
+        : item.precio;
       return total + precioNum;
     }, 0);
   };
@@ -49,7 +52,7 @@ function App() {
   const toggleModal = () => setEsModalAbierto(!esModalAbierto);
 
   return (
-    <BrowserRouter>
+    <Router>
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <Navbar 
           cuenta={carrito.length} 
@@ -65,6 +68,7 @@ function App() {
           </Routes>
         </main>
 
+        {/* --- MODAL DEL CARRITO --- */}
         {esModalAbierto && (
           <div className="modal-overlay" onClick={toggleModal}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -79,8 +83,8 @@ function App() {
                     {carrito.map((item, index) => (
                       <li key={index} style={{ borderBottom: '1px solid #444', padding: '10px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div>
-                          <span>{item.nombre}</span>
-                          <strong style={{ marginLeft: '10px', color: '#535bf2' }}>{item.precio}</strong>
+                          <span>{item.titulo || item.nombre}</span>
+                          <strong style={{ marginLeft: '10px', color: '#535bf2' }}>${item.precio}</strong>
                         </div>
                         <button 
                           onClick={() => eliminarDelCarrito(index)}
@@ -111,7 +115,7 @@ function App() {
 
         <Footer />
       </div>
-    </BrowserRouter>
+    </Router>
   );
 }
 
