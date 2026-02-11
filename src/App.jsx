@@ -1,3 +1,5 @@
+
+
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useState } from 'react';
 import Navbar from './components/Navbar';
@@ -8,18 +10,30 @@ import Contacto from './pages/Contacto';
 import './App.css';
 
 function App() {
-  // 1. Ahora el carrito es una LISTA (Array)
   const [carrito, setCarrito] = useState([]);
   const [esModalAbierto, setEsModalAbierto] = useState(false);
 
-  // 2. Función para agregar el objeto completo del producto
   const agregarAlCarrito = (producto) => {
     setCarrito([...carrito, producto]);
   };
 
-  // 3. Función para resetear el array
   const vaciarCarrito = () => {
     setCarrito([]);
+  };
+
+  // --- NUEVA FUNCIÓN: ELIMINAR UNO POR UNO ---
+  const eliminarDelCarrito = (indiceAEliminar) => {
+    const nuevoCarrito = carrito.filter((_, index) => index !== indiceAEliminar);
+    setCarrito(nuevoCarrito);
+  };
+
+  // --- NUEVA FUNCIÓN: CALCULAR TOTAL ---
+  const calcularTotal = () => {
+    return carrito.reduce((total, item) => {
+      // Limpiamos el "$" y convertimos a número
+      const precioNum = Number(item.precio.replace('$', ''));
+      return total + precioNum;
+    }, 0);
   };
 
   const toggleModal = () => setEsModalAbierto(!esModalAbierto);
@@ -27,7 +41,6 @@ function App() {
   return (
     <BrowserRouter>
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        {/* Pasamos el largo del array al Navbar */}
         <Navbar cuenta={carrito.length} alClickCarrito={toggleModal} />
         
         <main style={{ flex: 1, marginTop: '80px' }}>
@@ -46,20 +59,39 @@ function App() {
               <hr />
               
               {carrito.length === 0 ? (
-                <p>El carrito está vacío 😢</p>
+                <p style={{ padding: '20px' }}>El carrito está vacío 😢</p>
               ) : (
-                <ul style={{ listStyle: 'none', padding: 0, textAlign: 'left', maxHeight: '200px', overflowY: 'auto' }}>
-                  {carrito.map((item, index) => (
-                    <li key={index} style={{ borderBottom: '1px solid #444', padding: '10px 0', display: 'flex', justifyContent: 'space-between' }}>
-                      <span>{item.nombre}</span>
-                      <strong>{item.precio}</strong>
-                    </li>
-                  ))}
-                </ul>
+                <>
+                  <ul style={{ listStyle: 'none', padding: 0, textAlign: 'left', maxHeight: '250px', overflowY: 'auto' }}>
+                    {carrito.map((item, index) => (
+                      <li key={index} style={{ borderBottom: '1px solid #444', padding: '10px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div>
+                          <span>{item.nombre}</span>
+                          <strong style={{ marginLeft: '10px', color: '#535bf2' }}>{item.precio}</strong>
+                        </div>
+                        {/* Botón para eliminar producto individual */}
+                        <button 
+                          onClick={() => eliminarDelCarrito(index)}
+                          style={{ background: 'none', border: 'none', color: '#ff4757', cursor: 'pointer', fontSize: '1.2rem' }}
+                          title="Eliminar"
+                        >
+                          ×
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* MOSTRAR EL TOTAL */}
+                  <div style={{ marginTop: '20px', padding: '10px', borderTop: '2px solid #535bf2', textAlign: 'right' }}>
+                    <h3>Total: <span style={{ color: '#535bf2' }}>${calcularTotal()}</span></h3>
+                  </div>
+                </>
               )}
 
               <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <button className="btn-primario" onClick={() => alert('Compra procesada')}>Finalizar Compra</button>
+                {carrito.length > 0 && (
+                  <button className="btn-primario" onClick={() => alert('¡Compra procesada con éxito!')}>Finalizar Compra</button>
+                )}
                 <button className="btn-vaciar" onClick={vaciarCarrito}>Vaciar Carrito</button>
                 <button className="btn-secundario" onClick={toggleModal}>Cerrar</button>
               </div>
