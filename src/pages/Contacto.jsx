@@ -1,48 +1,27 @@
-// Make sure to run npm install @formspree/react
-// For more help visit https://formspr.ee/react-help
-import React from 'react';
-import { useForm, ValidationError } from '@formspree/react';
+const enviarFormulario = async (e) => {
+  e.preventDefault();
+  
+  // 1. Sustituye 'TU_ID_AQUI' por tu código de Formspree (ej. mwkgpoye)
+  const FORM_ID = "TU_ID_AQUI"; 
 
-function ContactForm() {
-  const [state, handleSubmit] = useForm("mlgwgzrk");
-  if (state.succeeded) {
-      return <p>Thanks for joining!</p>;
+  try {
+    const response = await fetch(`https://formspree.io/f/${FORM_ID}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(datos)
+    });
+
+    if (response.ok) {
+      setEnviado(true);
+      setError("");
+    } else {
+      const data = await response.json();
+      setError(data.error || "Hubo un problema. Revisa el ID de Formspree.");
+    }
+  } catch (err) {
+    setError("Error de conexión. Inténtalo más tarde.");
   }
-  return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="email">
-        Email Address
-      </label>
-      <input
-        id="email"
-        type="email" 
-        name="email"
-      />
-      <ValidationError 
-        prefix="Email" 
-        field="email"
-        errors={state.errors}
-      />
-      <textarea
-        id="message"
-        name="message"
-      />
-      <ValidationError 
-        prefix="Message" 
-        field="message"
-        errors={state.errors}
-      />
-      <button type="submit" disabled={state.submitting}>
-        Submit
-      </button>
-    </form>
-  );
-}
-
-function App() {
-  return (
-    <ContactForm />
-  );
-}
-
-export default App;
+};
