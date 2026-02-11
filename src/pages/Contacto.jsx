@@ -1,34 +1,48 @@
-const enviarFormulario = async (e) => { // Agregamos async
-    e.preventDefault();
-    
-    // Tus validaciones existentes
-    if (!datos.nombre || !datos.email || !datos.mensaje) {
-      setError('Por favor, rellena todos los campos.');
-      return;
-    }
-    if (!validarEmail(datos.email)) {
-      setError('El formato del correo no es válido.');
-      return;
-    }
+// Make sure to run npm install @formspree/react
+// For more help visit https://formspr.ee/react-help
+import React from 'react';
+import { useForm, ValidationError } from '@formspree/react';
 
-    // --- NUEVO: Envío de datos al servicio ---
-    try {
-      const response = await fetch("https://formspree.io/f/mlgwgzrk", {
-        method: "POST",
-        body: JSON.stringify(datos),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
-      });
+function ContactForm() {
+  const [state, handleSubmit] = useForm("mlgwgzrk");
+  if (state.succeeded) {
+      return <p>Thanks for joining!</p>;
+  }
+  return (
+    <form onSubmit={handleSubmit}>
+      <label htmlFor="email">
+        Email Address
+      </label>
+      <input
+        id="email"
+        type="email" 
+        name="email"
+      />
+      <ValidationError 
+        prefix="Email" 
+        field="email"
+        errors={state.errors}
+      />
+      <textarea
+        id="message"
+        name="message"
+      />
+      <ValidationError 
+        prefix="Message" 
+        field="message"
+        errors={state.errors}
+      />
+      <button type="submit" disabled={state.submitting}>
+        Submit
+      </button>
+    </form>
+  );
+}
 
-      if (response.ok) {
-        setError('');
-        setEnviado(true);
-      } else {
-        setError('Hubo un error al enviar el mensaje. Inténtalo de nuevo.');
-      }
-    } catch (err) {
-      setError('Error de conexión. Revisa tu internet.');
-    }
-  };
+function App() {
+  return (
+    <ContactForm />
+  );
+}
+
+export default App;
