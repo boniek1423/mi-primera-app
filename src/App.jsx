@@ -1,7 +1,5 @@
-
-
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react'; // <--- 1. Importamos useEffect
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Inicio from './pages/Inicio';
@@ -10,18 +8,23 @@ import Contacto from './pages/Contacto';
 import './App.css';
 
 function App() {
-  const [carrito, setCarrito] = useState([]);
+  // 2. Modificamos el useState para que cargue lo que haya en la memoria al iniciar
+  const [carrito, setCarrito] = useState(() => {
+    const carritoGuardado = localStorage.getItem('carrito_v1');
+    return carritoGuardado ? JSON.parse(carritoGuardado) : [];
+  });
+
   const [esModalAbierto, setEsModalAbierto] = useState(false);
-  // 1. Estado para controlar la animación
   const [animarCarrito, setAnimarCarrito] = useState(false);
+
+  // 3. Este useEffect guarda el carrito automáticamente cada vez que cambie
+  useEffect(() => {
+    localStorage.setItem('carrito_v1', JSON.stringify(carrito));
+  }, [carrito]);
 
   const agregarAlCarrito = (producto) => {
     setCarrito([...carrito, producto]);
-    
-    // 2. Disparar la animación
     setAnimarCarrito(true);
-    
-    // 3. Apagarla después de 300ms para que pueda repetirse en el siguiente clic
     setTimeout(() => {
       setAnimarCarrito(false);
     }, 300);
@@ -48,7 +51,6 @@ function App() {
   return (
     <BrowserRouter>
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        {/* 4. Pasamos el estado de la animación al Navbar */}
         <Navbar 
           cuenta={carrito.length} 
           alClickCarrito={toggleModal} 
@@ -63,7 +65,6 @@ function App() {
           </Routes>
         </main>
 
-        {/* --- MODAL DINÁMICO --- */}
         {esModalAbierto && (
           <div className="modal-overlay" onClick={toggleModal}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -84,7 +85,6 @@ function App() {
                         <button 
                           onClick={() => eliminarDelCarrito(index)}
                           style={{ background: 'none', border: 'none', color: '#ff4757', cursor: 'pointer', fontSize: '1.2rem' }}
-                          title="Eliminar"
                         >
                           ×
                         </button>
