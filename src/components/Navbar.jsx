@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import './Navbar.css';
 
-// 1. Recibimos 'cuenta' y también 'alClickCarrito' como props
-function Navbar({ cuenta, alClickCarrito }) {
+// 1. AHORA RECIBIMOS: cuenta, alClickCarrito y debeAnimar
+function Navbar({ cuenta, alClickCarrito, debeAnimar }) {
   const enlaces = [
     { nombre: 'Inicio', ruta: '/' },
     { nombre: 'Productos', ruta: '/productos' },
@@ -24,15 +24,14 @@ function Navbar({ cuenta, alClickCarrito }) {
           </li>
         ))}
 
-        {/* 2. Añadimos el evento onClick al contenedor del carrito */}
+        {/* 2. CLASE DINÁMICA: Si debeAnimar es true, se añade 'animacion-salto' */}
         <li 
-          className="cart-container" 
+          className={`cart-container ${debeAnimar ? 'animacion-salto' : ''}`} 
           onClick={alClickCarrito} 
           style={{ cursor: 'pointer' }}
           title="Ver carrito"
         >
           <span style={{ fontSize: '1.5rem' }}>🛒</span>
-          {/* Solo mostramos la burbuja si hay algo en el carrito */}
           {cuenta > 0 && <span className="cart-badge">{cuenta}</span>}
         </li>
       </ul>
