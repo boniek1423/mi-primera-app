@@ -1,0 +1,41 @@
+/* src/components/Navbar.css */
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%; /* Fundamental para que no se encoja */
+  height: 70px; /* Le damos una altura fija */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5%; /* Espacio a los lados */
+  background-color: rgba(26, 26, 26, 0.85); 
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  box-sizing: border-box; /* IMPORTANTE: evita que el padding rompa el ancho */
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 25px; /* Espacio entre cada link */
+}
+
+.nav-links li {
+  display: inline-block;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.nav-links a:hover {
+  color: #646cff; /* Color lila al pasar el mouse */
+}
