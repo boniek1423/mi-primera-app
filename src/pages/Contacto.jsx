@@ -1,22 +1,7 @@
-import { useState } from 'react';
-import './Contacto.css';
-
-export default function Contacto() {
-  // Estados para los campos y errores
-  const [datos, setDatos] = useState({ nombre: '', email: '', mensaje: '' });
-  const [error, setError] = useState('');
-  const [enviado, setEnviado] = useState(false);
-
-  const manejarCambio = (e) => {
-    setDatos({ ...datos, [e.target.name]: e.target.value });
-  };
-
-  const validarEmail = (email) => {
-    return /\S+@\S+\.\S+/.test(email); // Regex simple para validar email
-  };
-
-  const enviarFormulario = (e) => {
+const enviarFormulario = async (e) => { // Agregamos async
     e.preventDefault();
+    
+    // Tus validaciones existentes
     if (!datos.nombre || !datos.email || !datos.mensaje) {
       setError('Por favor, rellena todos los campos.');
       return;
@@ -26,44 +11,24 @@ export default function Contacto() {
       return;
     }
 
-    setError('');
-    setEnviado(true);
-    console.log("Datos enviados:", datos);
+    // --- NUEVO: Envío de datos al servicio ---
+    try {
+      const response = await fetch("https://formspree.io/f/mlgwgzrk", {
+        method: "POST",
+        body: JSON.stringify(datos),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        setError('');
+        setEnviado(true);
+      } else {
+        setError('Hubo un error al enviar el mensaje. Inténtalo de nuevo.');
+      }
+    } catch (err) {
+      setError('Error de conexión. Revisa tu internet.');
+    }
   };
-
-  if (enviado) {
-    return (
-      <div className="success-container">
-        <h2>¡Gracias, {datos.nombre}! ✨</h2>
-        <p>Hemos recibido tu mensaje y te contactaremos pronto.</p>
-        <button onClick={() => setEnviado(false)}>Enviar otro mensaje</button>
-      </div>
-    );
-  }
-
-  return (
-    <div className="contacto-container">
-      <h1>Contáctanos</h1>
-      <form onSubmit={enviarFormulario} className="form-contacto">
-        {error && <p className="error-msg">{error}</p>}
-        
-        <input 
-          type="text" name="nombre" placeholder="Tu nombre" 
-          onChange={manejarCambio} value={datos.nombre} 
-        />
-        
-        <input 
-          type="email" name="email" placeholder="Correo electrónico" 
-          onChange={manejarCambio} value={datos.email} 
-        />
-        
-        <textarea 
-          name="mensaje" placeholder="Escribe tu mensaje aquí..." 
-          onChange={manejarCambio} value={datos.mensaje}
-        ></textarea>
-
-        <button type="submit">Enviar Mensaje</button>
-      </form>
-    </div>
-  );
-}

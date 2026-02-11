@@ -1,10 +1,8 @@
 .contacto-container {
   max-width: 500px;
   margin: 50px auto;
-  padding: 40px;
-  background: #1e1e1e;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  padding: 20px;
+  color: white;
   text-align: center;
 }
 
@@ -12,52 +10,47 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
-}
-
-.form-contacto input, .form-contacto textarea {
-  padding: 15px;
-  border-radius: 10px;
+  background: #1a1a1a;
+  padding: 30px;
+  border-radius: 12px;
   border: 1px solid #333;
-  background: #2a2a2a;
-  color: white;
-  font-size: 1rem;
-  outline: none;
 }
 
-.form-contacto input:focus, .form-contacto textarea:focus {
-  border-color: #646cff;
-}
-
+.form-contacto input, 
 .form-contacto textarea {
-  height: 120px;
-  resize: none;
-}
-
-.form-contacto button {
-  padding: 15px;
-  background: #646cff;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #0f0f0f;
   color: white;
-  border: none;
-  border-radius: 10px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
+  font-family: inherit;
 }
 
-.form-contacto button:hover {
-  background: #747bff;
-  transform: translateY(-2px);
+.form-contacto input:focus, 
+.form-contacto textarea:focus {
+  border-color: #646cff;
+  outline: none;
 }
 
 .error-msg {
   color: #ff4d4d;
   background: rgba(255, 77, 77, 0.1);
   padding: 10px;
-  border-radius: 5px;
+  border-radius: 4px;
   font-size: 0.9rem;
 }
 
-.success-container {
-  text-align: center;
-  padding: 100px 20px;
+.form-contacto button {
+  background: #646cff;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.form-contacto button:hover {
+  background: #535bf2;
 }
